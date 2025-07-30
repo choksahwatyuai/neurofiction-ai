@@ -1,0 +1,36 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://elite-security-research.com/sitemap.xml
+
+# Disallow crawling of admin and system files
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /config/
+Disallow: /logs/
+Disallow: /tmp/
+
+# Disallow crawling of development and build files
+Disallow: /node_modules/
+Disallow: /vendor/
+Disallow: /build/
+Disallow: /dist/
+Disallow: /*.map$
+
+# Allow all other files
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.webp$
+
+# Crawl-delay: 10  # Uncomment and adjust if needed to limit crawl rate
+
+# Block specific user agents if needed
+# User-agent: BadBot
+# Disallow: /

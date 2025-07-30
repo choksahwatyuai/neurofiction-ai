@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выберите язык / Select Language / 选择语言</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #121212;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .language-selector {
+            text-align: center;
+            max-width: 500px;
+            padding: 2rem;
+            background: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h1 {
+            margin-bottom: 2rem;
+            color: #7c4dff;
+        }
+        .language-option {
+            display: block;
+            background: #2d2d2d;
+            color: #fff;
+            border: 2px solid #7c4dff;
+            padding: 1rem 2rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .language-option:hover {
+            background: #7c4dff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(124, 77, 255, 0.4);
+        }
+        .note {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #9e9e9e;
+        }
+    </style>
+</head>
+<body>
+    <div class="language-selector">
+        <h1>Выберите язык / Select Language / 选择语言</h1>
+        
+        <a href="ru/index.html" class="language-option">
+            Русский (Russian)
+        </a>
+        
+        <a href="en/index.html" class="language-option">
+            English (Английский)
+        </a>
+        
+        <a href="zh/index.html" class="language-option">
+            中文 (Chinese)
+        </a>
+        
+        <p class="note">
+            Ваш выбор будет сохранен для будущих посещений
+            <br>Your choice will be saved for future visits
+            <br>您的选择将被保存以供将来访问
+        </p>
+    </div>
+    
+    <script>
+        // Сохраняем выбранный язык в localStorage
+        document.querySelectorAll('.language-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                const lang = option.getAttribute('href').split('/')[0];
+                localStorage.setItem('selectedLanguage', lang);
+                // Перенаправление произойдет по ссылке
+            });
+        });
+    </script>
+</body>
+</html>

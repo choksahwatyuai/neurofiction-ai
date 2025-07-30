@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精英安全研究团队</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7c4dff;
+            --dark: #121212;
+            --light: #1e1e1e;
+            --text: #e0e0e0;
+            --card-bg: #2d2d2d;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans SC', sans-serif; line-height: 1.8; color: var(--text); background: var(--dark); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .language-switcher { display: flex; gap: 0.5rem; margin-left: 1.5rem; }
+        .btn { background: var(--primary); color: white; padding: 0.6rem 1.5rem; border-radius: 30px; text-decoration: none; }
+        .hero { padding: 8rem 0; text-align: center; }
+        .exploits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; margin: 3rem 0; }
+        .exploit-card { background: var(--card-bg); border-radius: 10px; overflow: hidden; }
+        .exploit-image { width: 100%; height: 180px; object-fit: cover; }
+        .exploit-content { padding: 1.5rem; }
+        footer { background: #0a0a0a; padding: 3rem 0; text-align: center; }
+        @media (max-width: 768px) { .exploits-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;">
+                <a href="#" style="font-size: 1.5rem; font-weight: 700; color: white; text-decoration: none;">精英安全</a>
+                <nav style="display: flex; align-items: center; gap: 1.5rem;">
+                    <a href="#exploits" style="color: #9e9e9e; text-decoration: none;">漏洞研究</a>
+                    <a href="#about" style="color: #9e9e9e; text-decoration: none;">关于我们</a>
+                    <div class="language-switcher">
+                        <button onclick="window.location.href='clean.html'" style="background: none; border: 1px solid #333; color: #9e9e9e; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer;">RU</button>
+                        <button onclick="window.location.href='clean-en.html'" style="background: none; border: 1px solid #333; color: #9e9e9e; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer;">EN</button>
+                        <button style="background: #7c4dff; border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer;">中文</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1 style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(90deg, #7c4dff, #00bcd4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">精英安全研究团队</h1>
+            <p style="font-size: 1.25rem; color: #9e9e9e; margin-bottom: 2rem;">高级网络安全研究与漏洞分析</p>
+            <a href="#exploits" class="btn">查看最新研究</a>
+        </div>
+    </section>
+
+    <section id="exploits" style="padding: 4rem 0;">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.2rem; margin-bottom: 1rem;">最新研究</h2>
+            <p style="text-align: center; color: #9e9e9e; max-width: 700px; margin: 0 auto 3rem;">全球范围内活跃利用的关键漏洞分析</p>
+            
+            <div class="exploits-grid">
+                <div class="exploit-card">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Log4Shell" class="exploit-image">
+                    <div class="exploit-content">
+                        <span style="background: rgba(124, 77, 255, 0.1); color: #7c4dff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem;">2021年12月</span>
+                        <h3 style="font-size: 1.4rem; margin: 1rem 0;">Log4Shell (CVE-2021-44228)</h3>
+                        <p style="color: #9e9e9e; margin-bottom: 1.5rem;">Log4j日志库中的关键漏洞，允许通过特制的日志消息执行远程代码。</p>
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid #333; border-radius: 8px; padding: 1rem; margin-top: 1.5rem;">
+                            <p style="margin-bottom: 0.5rem;"><strong>威胁等级：</strong> <span style="background: rgba(255, 59, 48, 0.2); color: #ff3b30; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">严重 (10.0/10)</span></p>
+                            <p style="margin-bottom: 0.5rem;"><strong>受影响：</strong> 苹果、亚马逊、推特等数千家组织</p>
+                            <p><strong>活动：</strong> 自披露以来被大规模利用</p>
+                        </div>
+                        <a href="exploits.html#log4shell" class="btn" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1.5rem; font-size: 0.9rem;">了解更多</a>
+                    </div>
+                </div>
+
+                <div class="exploit-card">
+                    <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Spring4Shell" class="exploit-image">
+                    <div class="exploit-content">
+                        <span style="background: rgba(124, 77, 255, 0.1); color: #7c4dff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem;">2022年3月</span>
+                        <h3 style="font-size: 1.4rem; margin: 1rem 0;">Spring4Shell (CVE-2022-22965)</h3>
+                        <p style="color: #9e9e9e; margin-bottom: 1.5rem;">Spring Framework中的远程代码执行漏洞，通过数据绑定机制触发。</p>
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid #333; border-radius: 8px; padding: 1rem; margin-top: 1.5rem;">
+                            <p style="margin-bottom: 0.5rem;"><strong>威胁等级：</strong> <span style="background: rgba(255, 59, 48, 0.2); color: #ff3b30; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">严重 (9.8/10)</span></p>
+                            <p style="margin-bottom: 0.5rem;"><strong>受影响：</strong> 使用Spring Framework的企业应用</p>
+                            <p><strong>活动：</strong> 大规模扫描和利用尝试</p>
+                        </div>
+                        <a href="exploits.html#spring4shell" class="btn" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1.5rem; font-size: 0.9rem;">了解更多</a>
+                    </div>
+                </div>
+
+                <div class="exploit-card">
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="ProxyNotShell" class="exploit-image">
+                    <div class="exploit-content">
+                        <span style="background: rgba(124, 77, 255, 0.1); color: #7c4dff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem;">2022年9月</span>
+                        <h3 style="font-size: 1.4rem; margin: 1rem 0;">ProxyNotShell (CVE-2022-41082)</h3>
+                        <p style="color: #9e9e9e; margin-bottom: 1.5rem;">Microsoft Exchange Server中的远程代码执行漏洞，通过PowerShell触发。</p>
+                        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid #333; border-radius: 8px; padding: 1rem; margin-top: 1.5rem;">
+                            <p style="margin-bottom: 0.5rem;"><strong>威胁等级：</strong> <span style="background: rgba(255, 59, 48, 0.2); color: #ff3b30; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">严重 (9.8/10)</span></p>
+                            <p style="margin-bottom: 0.5rem;"><strong>受影响：</strong> 超过30,000台Exchange服务器</p>
+                            <p><strong>活动：</strong> APT组织攻击、后门安装</p>
+                        </div>
+                        <a href="exploits.html#proxynotshell" class="btn" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1.5rem; font-size: 0.9rem;">了解更多</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="exploits.html" class="btn" style="display: inline-flex; align-items: center; gap: 0.5rem; background: transparent; border: 1px solid #7c4dff; color: #7c4dff; padding: 0.75rem 1.5rem; font-size: 1rem;">
+                    <i class="fas fa-bug"></i><span>查看所有漏洞</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" style="background: #1e1e1e; padding: 6rem 0; text-align: center;">
+        <div class="container">
+            <h2 style="font-size: 2.2rem; margin-bottom: 1.5rem;">关于我们</h2>
+            <p style="color: #9e9e9e; max-width: 700px; margin: 0 auto 2rem; font-size: 1.1rem; line-height: 1.8;">
+                我们是一支专注于漏洞研究和利用开发的网络安全专家团队。
+                我们的使命是通过深入分析和理解现代威胁来增强网络空间安全。
+            </p>
+            <a href="#contact" class="btn" style="background: transparent; border: 1px solid #7c4dff; color: #7c4dff;">联系我们</a>
+        </div>
+    </section>
+
+    <footer id="contact" style="background: #0a0a0a; padding: 3rem 0; text-align: center; border-top: 1px solid #333;">
+        <div class="container">
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; background: linear-gradient(90deg, #7c4dff, #00bcd4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">精英安全</div>
+                <p style="color: #9e9e9e; margin-bottom: 1.5rem; line-height: 1.8;">专业的网络安全研究与漏洞分析</p>
+                <div style="display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2rem;">
+                    <a href="#exploits" style="color: #9e9e9e; text-decoration: none;">漏洞研究</a>
+                    <a href="#about" style="color: #9e9e9e; text-decoration: none;">关于我们</a>
+                    <a href="#contact" style="color: #9e9e9e; text-decoration: none;">联系方式</a>
+                </div>
+                <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2rem;">
+                    <button onclick="window.location.href='clean.html'" style="background: none; border: 1px solid #333; color: #9e9e9e; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer;">RU</button>
+                    <button onclick="window.location.href='clean-en.html'" style="background: none; border: 1px solid #333; color: #9e9e9e; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer;">EN</button>
+                    <button style="background: #7c4dff; border: none; color: white; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer;">中文</button>
+                </div>
+                <p style="color: #9e9e9e; font-size: 0.9rem; opacity: 0.7; margin-bottom: 1rem;">© 2023 精英安全研究团队 版权所有</p>
+                <a href="xmpp:softwaredeveloperyu@5222.de" style="color: #7c4dff; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem;">
+                    <i class="fas fa-comment-alt"></i>
+                    <span>通过Jabber联系我们</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 滚动时添加阴影
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 5px 30px rgba(0, 0, 0, 0.5)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

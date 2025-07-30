@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Security Research Team</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7c4dff;
+            --dark: #121212;
+            --light: #1e1e1e;
+            --text: #e0e0e0;
+            --text-light: #9e9e9e;
+            --card-bg: #2d2d2d;
+            --border: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--dark);
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Language Switcher */
+        .language-switcher {
+            display: flex;
+            margin-left: 1.5rem;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            height: 32px;
+        }
+        
+        .language-switcher-container {
+            margin-bottom: 2rem;
+        }
+        
+        .language-switcher button {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            padding: 0 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .language-switcher button:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .language-switcher button.active {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* Header */
+        header {
+            background-color: rgba(26, 26, 26, 0.95);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .nav-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-link.active {
+            color: var(--primary);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 77, 255, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .hero {
+            padding: 8rem 0 6rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80') center/cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, #7c4dff, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .section {
+            padding: 6rem 0;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .exploits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .exploit-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border);
+        }
+        
+        .exploit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .exploit-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .exploit-content {
+            padding: 1.5rem;
+        }
+        
+        .exploit-date {
+            display: inline-block;
+            background: rgba(124, 77, 255, 0.1);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .exploit-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+        
+        .exploit-description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .exploit-details {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border);
+        }
+        
+        .exploit-details p {
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+        
+        .severity {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .severity-critical {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+        }
+        
+        .severity-high {
+            background: rgba(255, 149, 0, 0.2);
+            color: #ff9500;
+        }
+        
+        .exploits-actions {
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .view-all-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .view-all-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 77, 255, 0.3);
+        }
+        
+        .about-section {
+            background: var(--light);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .about-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80') center/cover;
+            opacity: 0.05;
+            z-index: 0;
+        }
+        
+        .about-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+        
+        footer {
+            background: #0a0a0a;
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, #7c4dff, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        .footer-text {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-link {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--primary);
+        }
+        
+        .copyright {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .exploits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">EliteSec</a>
+                <nav class="nav-links">
+                    <a href="#exploits" class="nav-link">Exploits</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <div class="language-switcher">
+                        <button data-lang="ru" class="btn btn-sm btn-outline" title="Русский">RU</button>
+                        <button data-lang="en" class="btn btn-sm active" title="English">EN</button>
+                        <button data-lang="zh" class="btn btn-sm btn-outline" title="中文">中文</button>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Elite Security Research Team</h1>
+                <p>Advanced cybersecurity research and vulnerability analysis</p>
+                <a href="#exploits" class="btn">View Latest Research</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Exploits Section -->
+    <section id="exploits" class="exploits-section">
+        <div class="container">
+            <h2 class="section-title">Latest Research</h2>
+            <p class="section-subtitle">
+                Analysis of the most critical vulnerabilities actively used in cyber attacks worldwide
+            </p>
+            
+            <div class="exploits-grid">
+                <!-- Log4Shell -->
+                <div class="exploit-card">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Log4Shell" class="exploit-image">
+                    <div class="exploit-content">
+                        <span class="exploit-date">December 2021</span>
+                        <h3 class="exploit-title">Log4Shell (CVE-2021-44228)</h3>
+                        <p class="exploit-description">Critical vulnerability in the Log4j logging library allowing remote code execution through crafted log messages.</p>
+                        <div class="exploit-details">
+                            <p><strong>Threat Level:</strong> <span class="severity severity-critical">Critical (10.0/10)</span></p>
+                            <p><strong>Affected:</strong> Apple, Amazon, Twitter, Cloudflare, and thousands of other organizations</p>
+                            <p><strong>Activity:</strong> Mass exploitation since disclosure, with millions of attack attempts</p>
+                        </div>
+                        <a href="exploits.html#log4shell" class="btn" style="margin-top: 1rem; display: inline-block; padding: 0.5rem 1.5rem; font-size: 0.9rem;">Learn More</a>
+                    </div>
+                </div>
+
+                <!-- Spring4Shell -->
+                <div class="exploit-card">
+                    <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Spring4Shell" class="exploit-image">
+                    <div class="exploit-content">
+                        <span class="exploit-date">March 2022</span>
+                        <h3 class="exploit-title">Spring4Shell (CVE-2022-22965)</h3>
+                        <p class="exploit-description">Remote code execution vulnerability in Spring Framework through data binding mechanism.</p>
+                        <div class="exploit-details">
+                            <p><strong>Threat Level:</strong> <span class="severity severity-critical">Critical (9.8/10)</span></p>
+                            <p><strong>Affected:</strong> Enterprise applications using Spring Framework</p>
+                            <p><strong>Activity:</strong> Mass scanning and exploitation attempts</p>
+                        </div>
+                        <a href="exploits.html#spring4shell" class="btn btn-details">Learn More</a>
+                    </div>
+                </div>
+
+                <!-- ProxyNotShell -->
+                <div class="exploit-card">
+                    <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="ProxyNotShell" class="exploit-image">
+                    <div class="exploit-content">
+                        <span class="exploit-date">September 2022</span>
+                        <h3 class="exploit-title">ProxyNotShell (CVE-2022-41082)</h3>
+                        <p class="exploit-description">Remote code execution vulnerability in Microsoft Exchange Server via PowerShell.</p>
+                        <div class="exploit-details">
+                            <p><strong>Threat Level:</strong> <span class="severity severity-critical">Critical (9.8/10)</span></p>
+                            <p><strong>Affected:</strong> Over 30,000 Exchange servers</p>
+                            <p><strong>Activity:</strong> APT group attacks, backdoor installation, data theft</p>
+                        </div>
+                        <a href="exploits.html#proxynotshell" class="btn btn-details">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="exploits-actions">
+                <a href="exploits.html" class="btn view-all-btn">
+                    <i class="fas fa-bug"></i><span>View All Vulnerabilities</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <h2 class="section-title">About Our Team</h2>
+                <p class="about-text">
+                    We are a team of cybersecurity experts specializing in vulnerability research and exploit development. 
+                    Our mission is to enhance security in cyberspace through deep analysis and understanding of modern threats.
+                </p>
+                <a href="#contact" class="btn btn-outline">Contact Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">EliteSec</div>
+                <p class="footer-text">
+                    Professional cybersecurity research and vulnerability analysis
+                </p>
+                <div class="footer-links">
+                    <a href="#exploits" class="footer-link">Exploits</a>
+                    <a href="#about" class="footer-link">About</a>
+                    <a href="#contact" class="footer-link">Contact</a>
+                </div>
+                <div class="language-switcher language-switcher-container">
+                    <button data-lang="ru" class="btn btn-sm btn-outline" title="Русский">RU</button>
+                    <button data-lang="en" class="btn btn-sm active" title="English">EN</button>
+                    <button data-lang="zh" class="btn btn-sm btn-outline" title="中文">中文</button>
+                </div>
+                <p class="copyright">© 2023 Elite Security Research Team. All rights reserved.</p>
+                <a href="xmpp:softwaredeveloperyu@5222.de" class="contact-jabber">
+                    <i class="fas fa-comment-alt"></i>
+                    <span>Contact via Jabber</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add shadow to header on scroll
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.boxShadow = '0 5px 30px rgba(0, 0, 0, 0.5)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
+    </script>
+    <script src="js/languages.js"></script>
+    <script>
+        // Initialize language switcher
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up language switcher buttons
+            document.querySelectorAll('.language-switcher button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const lang = this.getAttribute('data-lang');
+                    setLanguage(lang);
+                });
+            });
+            
+            // Initialize with saved language or browser language
+            initLanguage();
+        });
+    </script>
+    <script src="js/main.js"></script>
+</body>
+</html>
